@@ -1,0 +1,51 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+
+try:
+    iris = load_iris()
+    df = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
+    print("Dataset loaded successfully.")
+except Exception as e:
+    print(f"Error loading dataset: {e}")
+print(df.head())
+print(df.info())
+print(df.isnull().sum())
+# Since Iris dataset has no missing values, this is just for demonstration
+df.dropna(inplace=True)  # or df.fillna(method='ffill', inplace=True)
+grouped_means = df.groupby('species').mean()
+print(grouped_means)
+df['measurement_id'] = range(1, len(df) + 1)
+plt.figure(figsize=(10, 5))
+sns.lineplot(data=df, x='measurement_id', y='sepal length (cm)', hue='species')
+plt.title('Sepal Length Trend Over Measurements')
+plt.xlabel('Measurement ID')
+plt.ylabel('Sepal Length (cm)')
+plt.legend(title='Species')
+plt.tight_layout()
+plt.show()
+plt.figure(figsize=(7, 4))
+sns.barplot(data=df, x='species', y='petal length (cm)', ci=None)
+plt.title('Average Petal Length per Species')
+plt.xlabel('Species')
+plt.ylabel('Petal Length (cm)')
+plt.tight_layout()
+plt.show()
+plt.figure(figsize=(7, 4))
+sns.histplot(df['sepal width (cm)'], bins=15, kde=True)
+plt.title('Distribution of Sepal Width')
+plt.xlabel('Sepal Width (cm)')
+plt.ylabel('Frequency')
+plt.tight_layout()
+plt.show()
+plt.figure(figsize=(7, 4))
+sns.scatterplot(data=df, x='sepal length (cm)', y='petal length (cm)', hue='species')
+plt.title('Sepal Length vs Petal Length by Species')
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('Petal Length (cm)')
+plt.legend(title='Species')
+plt.tight_layout()
+plt.show()
+
